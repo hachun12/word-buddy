@@ -1,0 +1,17 @@
+{
+  "name": "Word Buddy 單字小夥伴",
+  "short_name": "單字小夥伴",
+  "description": "國小必學 300 單字互動學習：看圖、發音、例句、遊戲。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F7FF",
+  "theme_color": "#5B7CFA",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

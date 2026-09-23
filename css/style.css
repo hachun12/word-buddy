@@ -1,0 +1,483 @@
+/* =========================================================
+   Word Buddy 單字小夥伴 — 樣式表
+   設計原則：大按鈕、大字體、高彩度、圓角、手機/平板友善
+   ========================================================= */
+
+:root {
+  --brand: #5B7CFA;
+  --brand-dark: #3F5BD9;
+  --bg: #F4F7FF;
+  --card: #FFFFFF;
+  --text: #2D3352;
+  --muted: #8A90AD;
+  --good: #29CC7A;
+  --bad: #FF5C6C;
+  --star: #FFC93C;
+  --shadow: 0 6px 18px rgba(60, 80, 160, 0.12);
+  --shadow-lg: 0 12px 32px rgba(60, 80, 160, 0.18);
+  --radius: 22px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Comic Sans MS", "Segoe UI Rounded", "PingFang TC",
+    "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+  min-height: 100%;
+}
+
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------- 頂部列 ---------- */
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+#title {
+  flex: 1;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+.title-zh { font-size: .9rem; opacity: .9; font-weight: 600; }
+
+.icon-btn {
+  border: none;
+  background: rgba(255, 255, 255, .22);
+  color: #fff;
+  font-size: 1.4rem;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .1s, background .2s;
+}
+.icon-btn:active { transform: scale(.9); }
+
+.star-count {
+  background: rgba(255, 255, 255, .22);
+  padding: 8px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+/* ---------- 內容容器 ---------- */
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 18px 16px 60px;
+}
+
+.view-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 6px 0 4px;
+}
+.view-sub { color: var(--muted); margin: 0 0 18px; font-size: 1rem; }
+
+/* ---------- 首頁 hero ---------- */
+.hero {
+  background: linear-gradient(135deg, #6E8BFF, #8E7BFF);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
+.hero p { margin: 0; opacity: .95; }
+.hero-stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.stat-pill {
+  background: rgba(255, 255, 255, .2);
+  border-radius: 16px;
+  padding: 10px 16px;
+  font-weight: 700;
+}
+.stat-pill b { font-size: 1.4rem; display: block; }
+
+/* ---------- 混合挑戰按鈕 ---------- */
+.challenge-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.challenge-btn {
+  flex: 1;
+  min-width: 150px;
+  border: none;
+  border-radius: var(--radius);
+  padding: 18px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.challenge-btn .big { font-size: 2rem; }
+.challenge-btn:active { transform: scale(.96); }
+.challenge-listen { background: linear-gradient(135deg, #00C2C7, #23A6D5); }
+.challenge-quiz { background: linear-gradient(135deg, #FF9450, #FF5C6C); }
+
+.section-label { font-size: 1.2rem; font-weight: 800; margin: 8px 0 14px; }
+
+/* ---------- 分類格狀 ---------- */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+.cat-card {
+  background: var(--card);
+  border: none;
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform .12s;
+  border-top: 6px solid var(--cat-color, var(--brand));
+}
+.cat-card:active { transform: scale(.95); }
+.cat-card .cat-emoji { font-size: 2.6rem; }
+.cat-card .cat-name { font-weight: 800; margin-top: 6px; font-size: 1.05rem; }
+.cat-card .cat-zh { color: var(--muted); font-size: .9rem; }
+.cat-card .cat-prog {
+  margin-top: 10px;
+  height: 8px;
+  background: #EEF1FA;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.cat-card .cat-prog > i {
+  display: block;
+  height: 100%;
+  background: var(--cat-color, var(--brand));
+  border-radius: 999px;
+  transition: width .4s;
+}
+.cat-card .cat-count { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+
+/* ---------- 分類選單 (三種活動) ---------- */
+.activity-list { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.activity-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  border: none;
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  text-align: left;
+  transition: transform .1s;
+}
+.activity-btn:active { transform: scale(.97); }
+.activity-btn .a-emoji {
+  font-size: 2.2rem;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+.activity-btn .a-title { font-size: 1.2rem; font-weight: 800; }
+.activity-btn .a-sub { color: var(--muted); font-size: .9rem; }
+
+/* ---------- 單字卡 (翻卡) ---------- */
+.flash-wrap { display: flex; flex-direction: column; align-items: center; }
+.flash-progress {
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.flashcard {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 3 / 4;
+  perspective: 1200px;
+  cursor: pointer;
+}
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform .5s;
+  transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flash-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-top: 10px solid var(--cat-color, var(--brand));
+}
+.flash-front .fc-emoji { font-size: 6.5rem; line-height: 1; }
+.flash-front .fc-emoji.is-number {
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--cat-color, var(--brand));
+}
+.flash-front .fc-en { font-size: 2.4rem; font-weight: 800; margin-top: 18px; }
+.flash-front .fc-hint { color: var(--muted); margin-top: 12px; font-size: .95rem; }
+
+.flash-back { transform: rotateY(180deg); }
+.flash-back .fc-emoji-sm { font-size: 3.2rem; }
+.flash-back .fc-en2 { font-size: 1.9rem; font-weight: 800; margin-top: 6px; }
+.flash-back .fc-zh { font-size: 1.6rem; color: var(--brand-dark); font-weight: 700; margin-top: 4px; }
+.flash-back .fc-sentence {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  line-height: 1.9;
+  text-align: center;
+  color: var(--text);
+}
+.flash-back .sentence-label { color: var(--muted); font-size: .85rem; margin-top: 16px; }
+
+/* 例句中可點擊的單字 */
+.clickable-word {
+  color: var(--brand-dark);
+  font-weight: 800;
+  border-bottom: 2px dashed var(--brand);
+  cursor: pointer;
+  padding: 0 1px;
+}
+.clickable-word:active { background: #E8ECFF; border-radius: 4px; }
+
+/* 單字卡控制列 */
+.flash-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+.round-btn {
+  border: none;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform .1s;
+}
+.round-btn:active { transform: scale(.9); }
+.round-btn:disabled { opacity: .35; cursor: default; }
+.speak-btn {
+  background: var(--brand);
+  color: #fff;
+  width: 76px;
+  height: 76px;
+  font-size: 2rem;
+  box-shadow: var(--shadow-lg);
+}
+.speak-btn.speaking { animation: pulse .6s infinite; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+/* ---------- 遊戲 ---------- */
+.game-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.game-score { font-weight: 800; font-size: 1.1rem; }
+.game-progressbar {
+  height: 10px;
+  background: #E7ECFB;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+.game-progressbar > i {
+  display: block; height: 100%;
+  background: var(--brand);
+  transition: width .3s;
+}
+
+.game-prompt {
+  text-align: center;
+  margin-bottom: 22px;
+}
+.game-prompt .prompt-emoji { font-size: 6rem; line-height: 1; }
+.game-prompt .prompt-emoji.is-number {
+  font-weight: 900; color: var(--brand); font-size: 4.5rem;
+}
+.big-speak {
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 30px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.big-speak .big { font-size: 2.4rem; }
+.big-speak:active { transform: scale(.96); }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.option-btn {
+  border: 3px solid transparent;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .1s;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.option-btn .opt-emoji { font-size: 3rem; }
+.option-btn .opt-emoji.is-number { font-weight: 900; color: var(--brand); }
+.option-btn:active { transform: scale(.96); }
+.option-btn.correct { border-color: var(--good); background: #E6FBF0; }
+.option-btn.wrong { border-color: var(--bad); background: #FFECEE; }
+.option-btn.disabled { pointer-events: none; }
+
+.feedback {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  min-height: 40px;
+  margin-top: 18px;
+}
+.feedback.ok { color: var(--good); }
+.feedback.no { color: var(--bad); }
+
+/* 遊戲結束 */
+.result-card {
+  text-align: center;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: var(--shadow-lg);
+}
+.result-card .big-emoji { font-size: 5rem; }
+.result-card h2 { font-size: 1.8rem; margin: 10px 0; }
+.result-stars { font-size: 2rem; margin: 10px 0; }
+
+.primary-btn {
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px 26px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  margin: 8px 6px 0;
+}
+.primary-btn:active { transform: scale(.96); }
+.ghost-btn {
+  border: 2px solid var(--brand);
+  background: transparent;
+  color: var(--brand-dark);
+}
+
+/* ---------- 單字彈出視窗 ---------- */
+.word-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(30, 40, 90, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.word-popup.hidden { display: none; }
+.popup-card {
+  background: #fff;
+  border-radius: 26px;
+  padding: 26px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: pop .25s;
+}
+@keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.popup-card .p-emoji { font-size: 4rem; }
+.popup-card .p-en { font-size: 2rem; font-weight: 800; margin-top: 8px; }
+.popup-card .p-zh { font-size: 1.4rem; color: var(--brand-dark); margin-top: 4px; }
+.popup-card .p-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+
+.confetti-burst {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  pointer-events: none;
+  z-index: 60;
+  animation: floatUp 1s ease-out forwards;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -80px) scale(1.6); }
+}
+
+.hidden { display: none !important; }
+
+/* ---------- 小螢幕 ---------- */
+@media (max-width: 420px) {
+  #title { font-size: 1.1rem; }
+  .title-zh { display: none; }
+  .flash-front .fc-emoji { font-size: 5.5rem; }
+  .flash-front .fc-en { font-size: 2rem; }
+}

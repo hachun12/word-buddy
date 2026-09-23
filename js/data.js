@@ -1,0 +1,390 @@
+/* =========================================================
+   Word Buddy 單字小夥伴 — 單字資料庫
+   300 個必學單字，每筆包含：
+     id       流水號 (對照 PDF)
+     cat      分類代碼
+     en       英文
+     zh       中文
+     emoji    圖示
+     sentence 例句 (盡量使用 300 單字內的詞，可點擊查詢)
+   ========================================================= */
+
+const CATEGORIES = [
+  { id: 'numbers',      name: 'Numbers',       zh: '數字',   emoji: '🔢', color: '#FF6B6B' },
+  { id: 'people',       name: 'People',        zh: '人物',   emoji: '👪', color: '#FF9F43' },
+  { id: 'body',         name: 'Body Parts',    zh: '身體',   emoji: '🖐️', color: '#FECA57' },
+  { id: 'clothing',     name: 'Clothing',      zh: '衣物',   emoji: '👕', color: '#48DBFB' },
+  { id: 'animals',      name: 'Animals',       zh: '動物',   emoji: '🐶', color: '#1DD1A1' },
+  { id: 'things',       name: 'Things',        zh: '物品',   emoji: '🎒', color: '#5F27CD' },
+  { id: 'food',         name: 'Food',          zh: '食物',   emoji: '🍎', color: '#FF6348' },
+  { id: 'places',       name: 'Places',        zh: '地點',   emoji: '🏠', color: '#54A0FF' },
+  { id: 'time',         name: 'Time',          zh: '時間',   emoji: '🕐', color: '#00D2D3' },
+  { id: 'verbs',        name: 'Verbs',         zh: '動詞',   emoji: '🏃', color: '#EE5253' },
+  { id: 'adjectives',   name: 'Adjectives',    zh: '形容詞', emoji: '🌈', color: '#C56CF0' },
+  { id: 'prepositions', name: 'Prepositions',  zh: '介系詞', emoji: '📍', color: '#8395A7' },
+  { id: 'questions',    name: 'Question Words', zh: '疑問詞', emoji: '❓', color: '#FF9FF3' },
+];
+
+const WORDS = [
+  // ---------- Numbers 數字 (1-29) ----------
+  { id: 1,  cat: 'numbers', en: 'zero',    zh: '零',   emoji: '0',   sentence: 'I have zero candy.' },
+  { id: 2,  cat: 'numbers', en: 'one',     zh: '一',   emoji: '1',   sentence: 'I have one dog.' },
+  { id: 3,  cat: 'numbers', en: 'two',     zh: '二',   emoji: '2',   sentence: 'I see two cats.' },
+  { id: 4,  cat: 'numbers', en: 'three',   zh: '三',   emoji: '3',   sentence: 'I have three books.' },
+  { id: 5,  cat: 'numbers', en: 'four',    zh: '四',   emoji: '4',   sentence: 'I see four birds.' },
+  { id: 6,  cat: 'numbers', en: 'five',    zh: '五',   emoji: '5',   sentence: 'I have five pens.' },
+  { id: 7,  cat: 'numbers', en: 'six',     zh: '六',   emoji: '6',   sentence: 'I see six fish.' },
+  { id: 8,  cat: 'numbers', en: 'seven',   zh: '七',   emoji: '7',   sentence: 'I have seven eggs.' },
+  { id: 9,  cat: 'numbers', en: 'eight',   zh: '八',   emoji: '8',   sentence: 'I see eight frogs.' },
+  { id: 10, cat: 'numbers', en: 'nine',    zh: '九',   emoji: '9',   sentence: 'I have nine cups.' },
+  { id: 11, cat: 'numbers', en: 'ten',     zh: '十',   emoji: '10',  sentence: 'I see ten cats.' },
+  { id: 12, cat: 'numbers', en: 'eleven',  zh: '十一', emoji: '11',  sentence: 'I have eleven books.' },
+  { id: 13, cat: 'numbers', en: 'twelve',  zh: '十二', emoji: '12',  sentence: 'I see twelve cars.' },
+  { id: 14, cat: 'numbers', en: 'thirteen', zh: '十三', emoji: '13', sentence: 'I have thirteen crayons.' },
+  { id: 15, cat: 'numbers', en: 'fourteen', zh: '十四', emoji: '14', sentence: 'I see fourteen fish.' },
+  { id: 16, cat: 'numbers', en: 'fifteen', zh: '十五', emoji: '15',  sentence: 'I have fifteen markers.' },
+  { id: 17, cat: 'numbers', en: 'sixteen', zh: '十六', emoji: '16',  sentence: 'I see sixteen birds.' },
+  { id: 18, cat: 'numbers', en: 'seventeen', zh: '十七', emoji: '17', sentence: 'I have seventeen books.' },
+  { id: 19, cat: 'numbers', en: 'eighteen', zh: '十八', emoji: '18', sentence: 'My sister is eighteen.' },
+  { id: 20, cat: 'numbers', en: 'nineteen', zh: '十九', emoji: '19', sentence: 'My brother is nineteen.' },
+  { id: 21, cat: 'numbers', en: 'twenty',  zh: '二十', emoji: '20',  sentence: 'I have twenty crayons.' },
+  { id: 22, cat: 'numbers', en: 'thirty',  zh: '三十', emoji: '30',  sentence: 'My mother is thirty.' },
+  { id: 23, cat: 'numbers', en: 'forty',   zh: '四十', emoji: '40',  sentence: 'My father is forty.' },
+  { id: 24, cat: 'numbers', en: 'fifty',   zh: '五十', emoji: '50',  sentence: 'I have fifty books.' },
+  { id: 25, cat: 'numbers', en: 'sixty',   zh: '六十', emoji: '60',  sentence: 'My grandmother is sixty.' },
+  { id: 26, cat: 'numbers', en: 'seventy', zh: '七十', emoji: '70',  sentence: 'My grandfather is seventy.' },
+  { id: 27, cat: 'numbers', en: 'eighty',  zh: '八十', emoji: '80',  sentence: 'I have eighty books.' },
+  { id: 28, cat: 'numbers', en: 'ninety',  zh: '九十', emoji: '90',  sentence: 'I see ninety cars.' },
+  { id: 29, cat: 'numbers', en: 'hundred', zh: '一百', emoji: '100', sentence: 'I have one hundred books.' },
+
+  // ---------- People 人物 (30-59) ----------
+  { id: 30, cat: 'people', en: 'I',      zh: '我',       emoji: '🙋', sentence: 'I am happy.' },
+  { id: 31, cat: 'people', en: 'you',    zh: '你',       emoji: '👉', sentence: 'You are tall.' },
+  { id: 32, cat: 'people', en: 'we',     zh: '我們',     emoji: '👫', sentence: 'We are happy.' },
+  { id: 33, cat: 'people', en: 'they',   zh: '他們',     emoji: '👨‍👩‍👧‍👦', sentence: 'They can run.' },
+  { id: 34, cat: 'people', en: 'he',     zh: '他',       emoji: '👦', sentence: 'He is my brother.' },
+  { id: 35, cat: 'people', en: 'she',    zh: '她',       emoji: '👧', sentence: 'She is my sister.' },
+  { id: 36, cat: 'people', en: 'it',     zh: '它',       emoji: '🐾', sentence: 'It is a cat.' },
+  { id: 37, cat: 'people', en: 'my',     zh: '我的',     emoji: '🏷️', sentence: 'This is my dog.' },
+  { id: 38, cat: 'people', en: 'your',   zh: '你的',     emoji: '🏷️', sentence: 'Your hat is red.' },
+  { id: 39, cat: 'people', en: 'his',    zh: '他的',     emoji: '🏷️', sentence: 'His dog is big.' },
+  { id: 40, cat: 'people', en: 'her',    zh: '她的',     emoji: '🏷️', sentence: 'Her cat is small.' },
+  { id: 41, cat: 'people', en: 'its',    zh: '它的',     emoji: '🏷️', sentence: 'Its ear is long.' },
+  { id: 42, cat: 'people', en: 'grandmother', zh: '奶奶', emoji: '👵', sentence: 'My grandmother is old.' },
+  { id: 43, cat: 'people', en: 'grandfather', zh: '爺爺', emoji: '👴', sentence: 'My grandfather is tall.' },
+  { id: 44, cat: 'people', en: 'mother', zh: '媽媽',     emoji: '👩', sentence: 'My mother is happy.' },
+  { id: 45, cat: 'people', en: 'father', zh: '爸爸',     emoji: '👨', sentence: 'My father is tall.' },
+  { id: 46, cat: 'people', en: 'sister', zh: '姐妹',     emoji: '👧', sentence: 'My sister can sing.' },
+  { id: 47, cat: 'people', en: 'brother', zh: '兄弟',    emoji: '👦', sentence: 'My brother can swim.' },
+  { id: 48, cat: 'people', en: 'baby',   zh: '嬰兒',     emoji: '👶', sentence: 'The baby can cry.' },
+  { id: 49, cat: 'people', en: 'girl',   zh: '女孩',     emoji: '👧', sentence: 'The girl can dance.' },
+  { id: 50, cat: 'people', en: 'boy',    zh: '男孩',     emoji: '👦', sentence: 'The boy can jump.' },
+  { id: 51, cat: 'people', en: 'woman',  zh: '女人',     emoji: '👩', sentence: 'The woman is a teacher.' },
+  { id: 52, cat: 'people', en: 'man',    zh: '男人',     emoji: '👨', sentence: 'The man is a doctor.' },
+  { id: 53, cat: 'people', en: 'cook',   zh: '廚師',     emoji: '👨‍🍳', sentence: 'The cook likes food.' },
+  { id: 54, cat: 'people', en: 'teacher', zh: '老師',    emoji: '👩‍🏫', sentence: 'My teacher is good.' },
+  { id: 55, cat: 'people', en: 'student', zh: '學生',    emoji: '🧑‍🎓', sentence: 'The student can read.' },
+  { id: 56, cat: 'people', en: 'farmer', zh: '農夫',     emoji: '👨‍🌾', sentence: 'The farmer has a pig.' },
+  { id: 57, cat: 'people', en: 'doctor', zh: '醫生',     emoji: '👨‍⚕️', sentence: 'The doctor is good.' },
+  { id: 58, cat: 'people', en: 'nurse',  zh: '護士',     emoji: '👩‍⚕️', sentence: 'The nurse is happy.' },
+  { id: 59, cat: 'people', en: 'driver', zh: '司機',     emoji: '🧑‍✈️', sentence: 'The driver has a car.' },
+
+  // ---------- Body Parts 身體 (60-68) ----------
+  { id: 60, cat: 'body', en: 'head',  zh: '頭',   emoji: '😀', sentence: 'My head is big.' },
+  { id: 61, cat: 'body', en: 'hair',  zh: '頭髮', emoji: '💇', sentence: 'Her hair is long.' },
+  { id: 62, cat: 'body', en: 'eye',   zh: '眼睛', emoji: '👁️', sentence: 'My eye is brown.' },
+  { id: 63, cat: 'body', en: 'nose',  zh: '鼻子', emoji: '👃', sentence: 'My nose is small.' },
+  { id: 64, cat: 'body', en: 'mouth', zh: '嘴巴', emoji: '👄', sentence: 'My mouth is big.' },
+  { id: 65, cat: 'body', en: 'ear',   zh: '耳朵', emoji: '👂', sentence: 'My ear is small.' },
+  { id: 66, cat: 'body', en: 'hand',  zh: '手',   emoji: '✋', sentence: 'My hand is clean.' },
+  { id: 67, cat: 'body', en: 'leg',   zh: '腿',   emoji: '🦵', sentence: 'My leg is long.' },
+  { id: 68, cat: 'body', en: 'foot',  zh: '腳',   emoji: '🦶', sentence: 'My foot is big.' },
+
+  // ---------- Clothing 衣物 (69-78) ----------
+  { id: 69, cat: 'clothing', en: 'hat',     zh: '帽子',   emoji: '👒', sentence: 'My hat is red.' },
+  { id: 70, cat: 'clothing', en: 'glasses', zh: '眼鏡',   emoji: '👓', sentence: 'My glasses are black.' },
+  { id: 71, cat: 'clothing', en: 'shirt',   zh: '襯衫',   emoji: '👕', sentence: 'My shirt is blue.' },
+  { id: 72, cat: 'clothing', en: 'shorts',  zh: '短褲',   emoji: '🩳', sentence: 'My shorts are green.' },
+  { id: 73, cat: 'clothing', en: 'pants',   zh: '長褲',   emoji: '👖', sentence: 'My pants are black.' },
+  { id: 74, cat: 'clothing', en: 'skirt',   zh: '裙子',   emoji: '👚', sentence: 'Her skirt is pink.' },
+  { id: 75, cat: 'clothing', en: 'dress',   zh: '洋裝',   emoji: '👗', sentence: 'Her dress is white.' },
+  { id: 76, cat: 'clothing', en: 'socks',   zh: '襪子',   emoji: '🧦', sentence: 'My socks are gray.' },
+  { id: 77, cat: 'clothing', en: 'shoes',   zh: '鞋子',   emoji: '👟', sentence: 'My shoes are red.' },
+  { id: 78, cat: 'clothing', en: 'boots',   zh: '靴子',   emoji: '👢', sentence: 'My boots are brown.' },
+
+  // ---------- Animals 動物 (79-95) ----------
+  { id: 79, cat: 'animals', en: 'bear',    zh: '熊',     emoji: '🐻', sentence: 'The bear is big.' },
+  { id: 80, cat: 'animals', en: 'dog',     zh: '狗',     emoji: '🐶', sentence: 'My dog can run.' },
+  { id: 81, cat: 'animals', en: 'cat',     zh: '貓',     emoji: '🐱', sentence: 'My cat is small.' },
+  { id: 82, cat: 'animals', en: 'bird',    zh: '鳥',     emoji: '🐦', sentence: 'The bird can sing.' },
+  { id: 83, cat: 'animals', en: 'rabbit',  zh: '兔子',   emoji: '🐰', sentence: 'The rabbit can jump.' },
+  { id: 84, cat: 'animals', en: 'frog',    zh: '青蛙',   emoji: '🐸', sentence: 'The frog is green.' },
+  { id: 85, cat: 'animals', en: 'fish',    zh: '魚',     emoji: '🐟', sentence: 'The fish can swim.' },
+  { id: 86, cat: 'animals', en: 'chicken', zh: '雞',     emoji: '🐔', sentence: 'The chicken is small.' },
+  { id: 87, cat: 'animals', en: 'turtle',  zh: '烏龜',   emoji: '🐢', sentence: 'The turtle is slow.' },
+  { id: 88, cat: 'animals', en: 'lion',    zh: '獅子',   emoji: '🦁', sentence: 'The lion is big.' },
+  { id: 89, cat: 'animals', en: 'tiger',   zh: '老虎',   emoji: '🐯', sentence: 'The tiger can run fast.' },
+  { id: 90, cat: 'animals', en: 'monkey',  zh: '猴子',   emoji: '🐵', sentence: 'The monkey can jump.' },
+  { id: 91, cat: 'animals', en: 'giraffe', zh: '長頸鹿', emoji: '🦒', sentence: 'The giraffe is tall.' },
+  { id: 92, cat: 'animals', en: 'fox',     zh: '狐狸',   emoji: '🦊', sentence: 'The fox is fast.' },
+  { id: 93, cat: 'animals', en: 'zebra',   zh: '斑馬',   emoji: '🦓', sentence: 'The zebra is black and white.' },
+  { id: 94, cat: 'animals', en: 'pig',     zh: '豬',     emoji: '🐷', sentence: 'The pig is pink.' },
+  { id: 95, cat: 'animals', en: 'elephant', zh: '大象',  emoji: '🐘', sentence: 'The elephant is big.' },
+
+  // ---------- Things 物品 (96-145) ----------
+  { id: 96,  cat: 'things', en: 'pen',        zh: '筆',     emoji: '🖊️', sentence: 'This is my pen.' },
+  { id: 97,  cat: 'things', en: 'pencil',     zh: '鉛筆',   emoji: '✏️', sentence: 'My pencil is long.' },
+  { id: 98,  cat: 'things', en: 'marker',     zh: '麥克筆', emoji: '🖍️', sentence: 'My marker is red.' },
+  { id: 99,  cat: 'things', en: 'eraser',     zh: '橡皮擦', emoji: '🧽', sentence: 'My eraser is small.' },
+  { id: 100, cat: 'things', en: 'ruler',      zh: '尺',     emoji: '📏', sentence: 'My ruler is long.' },
+  { id: 101, cat: 'things', en: 'book',       zh: '書',     emoji: '📖', sentence: 'I like this book.' },
+  { id: 102, cat: 'things', en: 'bag',        zh: '書包',   emoji: '🎒', sentence: 'My bag is big.' },
+  { id: 103, cat: 'things', en: 'desk',       zh: '書桌',   emoji: '🗄️', sentence: 'The book is on the desk.' },
+  { id: 104, cat: 'things', en: 'table',      zh: '桌子',   emoji: '🍽️', sentence: 'The cup is on the table.' },
+  { id: 105, cat: 'things', en: 'chair',      zh: '椅子',   emoji: '🪑', sentence: 'I sit on the chair.' },
+  { id: 106, cat: 'things', en: 'crayon',     zh: '蠟筆',   emoji: '🖍️', sentence: 'My crayon is blue.' },
+  { id: 107, cat: 'things', en: 'box',        zh: '盒子',   emoji: '📦', sentence: 'The cat is in the box.' },
+  { id: 108, cat: 'things', en: 'door',       zh: '門',     emoji: '🚪', sentence: 'The door is white.' },
+  { id: 109, cat: 'things', en: 'window',     zh: '窗戶',   emoji: '🪟', sentence: 'The window is big.' },
+  { id: 110, cat: 'things', en: 'picture',    zh: '圖畫',   emoji: '🖼️', sentence: 'I like this picture.' },
+  { id: 111, cat: 'things', en: 'TV',         zh: '電視',   emoji: '📺', sentence: 'I watch TV.' },
+  { id: 112, cat: 'things', en: 'sofa',       zh: '沙發',   emoji: '🛋️', sentence: 'The cat is on the sofa.' },
+  { id: 113, cat: 'things', en: 'light',      zh: '燈',     emoji: '💡', sentence: 'The light is on.' },
+  { id: 114, cat: 'things', en: 'bed',        zh: '床',     emoji: '🛏️', sentence: 'My bed is big.' },
+  { id: 115, cat: 'things', en: 'lamp',       zh: '檯燈',   emoji: '🪔', sentence: 'The lamp is on the desk.' },
+  { id: 116, cat: 'things', en: 'clock',      zh: '時鐘',   emoji: '🕐', sentence: 'The clock is on the wall.' },
+  { id: 117, cat: 'things', en: 'cell phone', zh: '手機',   emoji: '📱', sentence: 'My cell phone is new.' },
+  { id: 118, cat: 'things', en: 'video game', zh: '電動遊戲', emoji: '🎮', sentence: 'I like this video game.' },
+  { id: 119, cat: 'things', en: 'computer',   zh: '電腦',   emoji: '💻', sentence: 'My computer is new.' },
+  { id: 120, cat: 'things', en: 'cup',        zh: '杯子',   emoji: '🥤', sentence: 'The cup is on the table.' },
+  { id: 121, cat: 'things', en: 'mug',        zh: '馬克杯', emoji: '☕', sentence: 'My mug is red.' },
+  { id: 122, cat: 'things', en: 'bowl',       zh: '碗',     emoji: '🥣', sentence: 'The bowl has rice.' },
+  { id: 123, cat: 'things', en: 'ball',       zh: '球',     emoji: '⚽', sentence: 'The ball is red.' },
+  { id: 124, cat: 'things', en: 'yo-yo',      zh: '溜溜球', emoji: '🪀', sentence: 'I like my yo-yo.' },
+  { id: 125, cat: 'things', en: 'bat',        zh: '球棒',   emoji: '🏏', sentence: 'The bat is long.' },
+  { id: 126, cat: 'things', en: 'robot',      zh: '機器人', emoji: '🤖', sentence: 'My robot is big.' },
+  { id: 127, cat: 'things', en: 'kite',       zh: '風箏',   emoji: '🪁', sentence: 'My kite is yellow.' },
+  { id: 128, cat: 'things', en: 'doll',       zh: '娃娃',   emoji: '🪆', sentence: 'Her doll is small.' },
+  { id: 129, cat: 'things', en: 'mop',        zh: '拖把',   emoji: '🧹', sentence: 'The mop is here.' },
+  { id: 130, cat: 'things', en: 'map',        zh: '地圖',   emoji: '🗺️', sentence: 'I look at the map.' },
+  { id: 131, cat: 'things', en: 'weather',    zh: '天氣',   emoji: '🌈', sentence: 'The weather is good.' },
+  { id: 132, cat: 'things', en: 'sun',        zh: '太陽',   emoji: '☀️', sentence: 'The sun is hot.' },
+  { id: 133, cat: 'things', en: 'cloud',      zh: '雲',     emoji: '☁️', sentence: 'The cloud is white.' },
+  { id: 134, cat: 'things', en: 'wind',       zh: '風',     emoji: '🌬️', sentence: 'The wind is cold.' },
+  { id: 135, cat: 'things', en: 'rain',       zh: '雨',     emoji: '🌧️', sentence: 'The rain is cold.' },
+  { id: 136, cat: 'things', en: 'snow',       zh: '雪',     emoji: '❄️', sentence: 'The snow is white.' },
+  { id: 137, cat: 'things', en: 'river',      zh: '河',     emoji: '🏞️', sentence: 'The fish is in the river.' },
+  { id: 138, cat: 'things', en: 'flower',     zh: '花',     emoji: '🌸', sentence: 'The flower is pink.' },
+  { id: 139, cat: 'things', en: 'grass',      zh: '草',     emoji: '🌱', sentence: 'The grass is green.' },
+  { id: 140, cat: 'things', en: 'tree',       zh: '樹',     emoji: '🌳', sentence: 'The bird is in the tree.' },
+  { id: 141, cat: 'things', en: 'bike',       zh: '腳踏車', emoji: '🚲', sentence: 'I ride a bike.' },
+  { id: 142, cat: 'things', en: 'car',        zh: '汽車',   emoji: '🚗', sentence: 'My car is fast.' },
+  { id: 143, cat: 'things', en: 'bus',        zh: '公車',   emoji: '🚌', sentence: 'The bus is big.' },
+  { id: 144, cat: 'things', en: 'train',      zh: '火車',   emoji: '🚆', sentence: 'The train is fast.' },
+  { id: 145, cat: 'things', en: 'taxi',       zh: '計程車', emoji: '🚕', sentence: 'The taxi is yellow.' },
+
+  // ---------- Food 食物 (146-175) ----------
+  { id: 146, cat: 'food', en: 'breakfast', zh: '早餐',     emoji: '🍳', sentence: 'I eat breakfast.' },
+  { id: 147, cat: 'food', en: 'lunch',     zh: '午餐',     emoji: '🍱', sentence: 'I like lunch.' },
+  { id: 148, cat: 'food', en: 'dinner',    zh: '晚餐',     emoji: '🍽️', sentence: 'Dinner is good.' },
+  { id: 149, cat: 'food', en: 'cookie',    zh: '餅乾',     emoji: '🍪', sentence: 'I like cookies.' },
+  { id: 150, cat: 'food', en: 'ice cream', zh: '冰淇淋',   emoji: '🍦', sentence: 'I want ice cream.' },
+  { id: 151, cat: 'food', en: 'candy',     zh: '糖果',     emoji: '🍬', sentence: 'I like candy.' },
+  { id: 152, cat: 'food', en: 'hamburger', zh: '漢堡',     emoji: '🍔', sentence: 'I want a hamburger.' },
+  { id: 153, cat: 'food', en: 'hot dog',   zh: '熱狗',     emoji: '🌭', sentence: 'I like hot dogs.' },
+  { id: 154, cat: 'food', en: 'pizza',     zh: '披薩',     emoji: '🍕', sentence: 'I want pizza.' },
+  { id: 155, cat: 'food', en: 'bread',     zh: '麵包',     emoji: '🍞', sentence: 'I eat bread.' },
+  { id: 156, cat: 'food', en: 'sandwich',  zh: '三明治',   emoji: '🥪', sentence: 'I want a sandwich.' },
+  { id: 157, cat: 'food', en: 'cake',      zh: '蛋糕',     emoji: '🍰', sentence: 'The cake is big.' },
+  { id: 158, cat: 'food', en: 'rice',      zh: '米飯',     emoji: '🍚', sentence: 'I eat rice.' },
+  { id: 159, cat: 'food', en: 'noodles',   zh: '麵',       emoji: '🍜', sentence: 'I like noodles.' },
+  { id: 160, cat: 'food', en: 'spaghetti', zh: '義大利麵', emoji: '🍝', sentence: 'I want spaghetti.' },
+  { id: 161, cat: 'food', en: 'tea',       zh: '茶',       emoji: '🍵', sentence: 'I drink tea.' },
+  { id: 162, cat: 'food', en: 'coke',      zh: '可樂',     emoji: '🥤', sentence: 'I like coke.' },
+  { id: 163, cat: 'food', en: 'soda',      zh: '汽水',     emoji: '🥤', sentence: 'I want soda.' },
+  { id: 164, cat: 'food', en: 'water',     zh: '水',       emoji: '💧', sentence: 'I drink water.' },
+  { id: 165, cat: 'food', en: 'juice',     zh: '果汁',     emoji: '🧃', sentence: 'I like juice.' },
+  { id: 166, cat: 'food', en: 'milk',      zh: '牛奶',     emoji: '🥛', sentence: 'I drink milk.' },
+  { id: 167, cat: 'food', en: 'egg',       zh: '蛋',       emoji: '🥚', sentence: 'I eat an egg.' },
+  { id: 168, cat: 'food', en: 'ham',       zh: '火腿',     emoji: '🍖', sentence: 'I like ham.' },
+  { id: 169, cat: 'food', en: 'salad',     zh: '沙拉',     emoji: '🥗', sentence: 'I eat salad.' },
+  { id: 170, cat: 'food', en: 'tomato',    zh: '番茄',     emoji: '🍅', sentence: 'The tomato is red.' },
+  { id: 171, cat: 'food', en: 'banana',    zh: '香蕉',     emoji: '🍌', sentence: 'The banana is yellow.' },
+  { id: 172, cat: 'food', en: 'apple',     zh: '蘋果',     emoji: '🍎', sentence: 'The apple is red.' },
+  { id: 173, cat: 'food', en: 'pear',      zh: '梨子',     emoji: '🍐', sentence: 'The pear is green.' },
+  { id: 174, cat: 'food', en: 'grape',     zh: '葡萄',     emoji: '🍇', sentence: 'The grape is purple.' },
+  { id: 175, cat: 'food', en: 'peach',     zh: '桃子',     emoji: '🍑', sentence: 'I like peaches.' },
+
+  // ---------- Places 地點 (176-190) ----------
+  { id: 176, cat: 'places', en: 'home',        zh: '家',   emoji: '🏠', sentence: 'I am at home.' },
+  { id: 177, cat: 'places', en: 'school',      zh: '學校', emoji: '🏫', sentence: 'I like school.' },
+  { id: 178, cat: 'places', en: 'park',        zh: '公園', emoji: '🏞️', sentence: 'I run in the park.' },
+  { id: 179, cat: 'places', en: 'zoo',         zh: '動物園', emoji: '🦁', sentence: 'I see a lion at the zoo.' },
+  { id: 180, cat: 'places', en: 'store',       zh: '商店', emoji: '🏬', sentence: 'The store is big.' },
+  { id: 181, cat: 'places', en: 'shop',        zh: '店',   emoji: '🛍️', sentence: 'The shop is small.' },
+  { id: 182, cat: 'places', en: 'house',       zh: '房子', emoji: '🏡', sentence: 'My house is big.' },
+  { id: 183, cat: 'places', en: 'garage',      zh: '車庫', emoji: '🅿️', sentence: 'The car is in the garage.' },
+  { id: 184, cat: 'places', en: 'living room', zh: '客廳', emoji: '🛋️', sentence: 'The sofa is in the living room.' },
+  { id: 185, cat: 'places', en: 'dining room', zh: '餐廳', emoji: '🍽️', sentence: 'We eat in the dining room.' },
+  { id: 186, cat: 'places', en: 'kitchen',     zh: '廚房', emoji: '🍳', sentence: 'The cook is in the kitchen.' },
+  { id: 187, cat: 'places', en: 'bedroom',     zh: '臥室', emoji: '🛏️', sentence: 'My bed is in the bedroom.' },
+  { id: 188, cat: 'places', en: 'bathroom',    zh: '浴室', emoji: '🛁', sentence: 'The bathroom is clean.' },
+  { id: 189, cat: 'places', en: 'yard',        zh: '院子', emoji: '🏡', sentence: 'The yard is big.' },
+  { id: 190, cat: 'places', en: 'garden',      zh: '花園', emoji: '🌷', sentence: 'The flower is in the garden.' },
+
+  // ---------- Time 時間 (191-204) ----------
+  { id: 191, cat: 'time', en: "o'clock",   zh: '...點鐘', emoji: '🕐', sentence: 'It is two o\'clock.' },
+  { id: 192, cat: 'time', en: 'now',       zh: '現在',    emoji: '⏰', sentence: 'I am happy now.' },
+  { id: 193, cat: 'time', en: 'morning',   zh: '早上',    emoji: '🌅', sentence: 'Good morning!' },
+  { id: 194, cat: 'time', en: 'afternoon', zh: '下午',    emoji: '🌇', sentence: 'Good afternoon!' },
+  { id: 195, cat: 'time', en: 'evening',   zh: '傍晚',    emoji: '🌆', sentence: 'Good evening!' },
+  { id: 196, cat: 'time', en: 'night',     zh: '晚上',    emoji: '🌙', sentence: 'Good night!' },
+  { id: 197, cat: 'time', en: 'today',     zh: '今天',    emoji: '📅', sentence: 'Today is sunny.' },
+  { id: 198, cat: 'time', en: 'Sunday',    zh: '星期日',  emoji: '📅', sentence: 'Today is Sunday.' },
+  { id: 199, cat: 'time', en: 'Monday',    zh: '星期一',  emoji: '📅', sentence: 'Today is Monday.' },
+  { id: 200, cat: 'time', en: 'Tuesday',   zh: '星期二',  emoji: '📅', sentence: 'Today is Tuesday.' },
+  { id: 201, cat: 'time', en: 'Wednesday', zh: '星期三',  emoji: '📅', sentence: 'Today is Wednesday.' },
+  { id: 202, cat: 'time', en: 'Thursday',  zh: '星期四',  emoji: '📅', sentence: 'Today is Thursday.' },
+  { id: 203, cat: 'time', en: 'Friday',    zh: '星期五',  emoji: '📅', sentence: 'Today is Friday.' },
+  { id: 204, cat: 'time', en: 'Saturday',  zh: '星期六',  emoji: '📅', sentence: 'Today is Saturday.' },
+
+  // ---------- Verbs 動詞 (205-237) ----------
+  { id: 205, cat: 'verbs', en: 'do',    zh: '做',     emoji: '🙌', sentence: 'What do you like?' },
+  { id: 206, cat: 'verbs', en: 'like',  zh: '喜歡',   emoji: '👍', sentence: 'I like cats.' },
+  { id: 207, cat: 'verbs', en: 'love',  zh: '愛',     emoji: '❤️', sentence: 'I love my dog.' },
+  { id: 208, cat: 'verbs', en: 'want',  zh: '想要',   emoji: '🙏', sentence: 'I want a cookie.' },
+  { id: 209, cat: 'verbs', en: 'have',  zh: '有',     emoji: '🤲', sentence: 'I have a dog.' },
+  { id: 210, cat: 'verbs', en: 'run',   zh: '跑',     emoji: '🏃', sentence: 'I can run fast.' },
+  { id: 211, cat: 'verbs', en: 'walk',  zh: '走路',   emoji: '🚶', sentence: 'I walk to school.' },
+  { id: 212, cat: 'verbs', en: 'swim',  zh: '游泳',   emoji: '🏊', sentence: 'I can swim.' },
+  { id: 213, cat: 'verbs', en: 'jump',  zh: '跳',     emoji: '🤸', sentence: 'I can jump.' },
+  { id: 214, cat: 'verbs', en: 'ride',  zh: '騎',     emoji: '🚴', sentence: 'I ride a bike.' },
+  { id: 215, cat: 'verbs', en: 'dance', zh: '跳舞',   emoji: '💃', sentence: 'I like to dance.' },
+  { id: 216, cat: 'verbs', en: 'sing',  zh: '唱歌',   emoji: '🎤', sentence: 'I can sing.' },
+  { id: 217, cat: 'verbs', en: 'write', zh: '寫',     emoji: '✍️', sentence: 'I write with a pen.' },
+  { id: 218, cat: 'verbs', en: 'read',  zh: '讀',     emoji: '📖', sentence: 'I read a book.' },
+  { id: 219, cat: 'verbs', en: 'draw',  zh: '畫',     emoji: '🖌️', sentence: 'I draw a cat.' },
+  { id: 220, cat: 'verbs', en: 'color', zh: '著色',   emoji: '🎨', sentence: 'I color a picture.' },
+  { id: 221, cat: 'verbs', en: 'paint', zh: '繪畫',   emoji: '🖼️', sentence: 'I paint a flower.' },
+  { id: 222, cat: 'verbs', en: 'speak', zh: '說',     emoji: '🗣️', sentence: 'I can speak.' },
+  { id: 223, cat: 'verbs', en: 'say',   zh: '說',     emoji: '💬', sentence: 'What do you say?' },
+  { id: 224, cat: 'verbs', en: 'eat',   zh: '吃',     emoji: '🍽️', sentence: 'I eat an apple.' },
+  { id: 225, cat: 'verbs', en: 'drink', zh: '喝',     emoji: '🥤', sentence: 'I drink milk.' },
+  { id: 226, cat: 'verbs', en: 'look',  zh: '看',     emoji: '👀', sentence: 'Look at the bird!' },
+  { id: 227, cat: 'verbs', en: 'watch', zh: '觀看',   emoji: '📺', sentence: 'I watch TV.' },
+  { id: 228, cat: 'verbs', en: 'see',   zh: '看見',   emoji: '👁️', sentence: 'I see a dog.' },
+  { id: 229, cat: 'verbs', en: 'listen', zh: '聽',    emoji: '👂', sentence: 'Listen to me!' },
+  { id: 230, cat: 'verbs', en: 'smile', zh: '微笑',   emoji: '😊', sentence: 'I smile at you.' },
+  { id: 231, cat: 'verbs', en: 'laugh', zh: '笑',     emoji: '😄', sentence: 'We laugh together.' },
+  { id: 232, cat: 'verbs', en: 'cry',   zh: '哭',     emoji: '😢', sentence: 'The baby can cry.' },
+  { id: 233, cat: 'verbs', en: 'hold',  zh: '握/抱',  emoji: '🤝', sentence: 'I hold my mother\'s hand.' },
+  { id: 234, cat: 'verbs', en: 'put',   zh: '放',     emoji: '📥', sentence: 'Put it in the box.' },
+  { id: 235, cat: 'verbs', en: 'take',  zh: '拿',     emoji: '🫴', sentence: 'Take my hand.' },
+  { id: 236, cat: 'verbs', en: 'sit',   zh: '坐',     emoji: '🪑', sentence: 'Sit on the chair.' },
+  { id: 237, cat: 'verbs', en: 'stand', zh: '站',     emoji: '🧍', sentence: 'I stand up.' },
+
+  // ---------- Adjectives 形容詞 (238-281) ----------
+  { id: 238, cat: 'adjectives', en: 'fine',     zh: '好的',   emoji: '🙂', sentence: 'I am fine.' },
+  { id: 239, cat: 'adjectives', en: 'good',     zh: '好',     emoji: '👍', sentence: 'This is good.' },
+  { id: 240, cat: 'adjectives', en: 'bad',      zh: '壞',     emoji: '👎', sentence: 'This is bad.' },
+  { id: 241, cat: 'adjectives', en: 'favorite', zh: '最愛的', emoji: '⭐', sentence: 'Red is my favorite color.' },
+  { id: 242, cat: 'adjectives', en: 'big',      zh: '大',     emoji: '🐘', sentence: 'The elephant is big.' },
+  { id: 243, cat: 'adjectives', en: 'small',    zh: '小',     emoji: '🐁', sentence: 'The cat is small.' },
+  { id: 244, cat: 'adjectives', en: 'little',   zh: '小的',   emoji: '🐜', sentence: 'The baby is little.' },
+  { id: 245, cat: 'adjectives', en: 'old',      zh: '老/舊',  emoji: '👴', sentence: 'My grandfather is old.' },
+  { id: 246, cat: 'adjectives', en: 'young',    zh: '年輕',   emoji: '👶', sentence: 'The baby is young.' },
+  { id: 247, cat: 'adjectives', en: 'tall',     zh: '高',     emoji: '🦒', sentence: 'The giraffe is tall.' },
+  { id: 248, cat: 'adjectives', en: 'long',     zh: '長',     emoji: '📏', sentence: 'Her hair is long.' },
+  { id: 249, cat: 'adjectives', en: 'short',    zh: '短/矮',  emoji: '📐', sentence: 'My hair is short.' },
+  { id: 250, cat: 'adjectives', en: 'thin',     zh: '瘦',     emoji: '📎', sentence: 'The cat is thin.' },
+  { id: 251, cat: 'adjectives', en: 'fat',      zh: '胖',     emoji: '🐷', sentence: 'The pig is fat.' },
+  { id: 252, cat: 'adjectives', en: 'fast',     zh: '快',     emoji: '⚡', sentence: 'The tiger is fast.' },
+  { id: 253, cat: 'adjectives', en: 'slow',     zh: '慢',     emoji: '🐢', sentence: 'The turtle is slow.' },
+  { id: 254, cat: 'adjectives', en: 'clean',    zh: '乾淨',   emoji: '✨', sentence: 'My hand is clean.' },
+  { id: 255, cat: 'adjectives', en: 'dirty',    zh: '髒',     emoji: '🟤', sentence: 'My shoes are dirty.' },
+  { id: 256, cat: 'adjectives', en: 'hungry',   zh: '餓',     emoji: '🍽️', sentence: 'I am hungry.' },
+  { id: 257, cat: 'adjectives', en: 'thirsty',  zh: '渴',     emoji: '💧', sentence: 'I am thirsty.' },
+  { id: 258, cat: 'adjectives', en: 'happy',    zh: '快樂',   emoji: '😊', sentence: 'I am happy.' },
+  { id: 259, cat: 'adjectives', en: 'unhappy',  zh: '不快樂', emoji: '🙁', sentence: 'I am unhappy.' },
+  { id: 260, cat: 'adjectives', en: 'sad',      zh: '難過',   emoji: '😢', sentence: 'I am sad.' },
+  { id: 261, cat: 'adjectives', en: 'angry',    zh: '生氣',   emoji: '😠', sentence: 'I am angry.' },
+  { id: 262, cat: 'adjectives', en: 'sick',     zh: '生病',   emoji: '🤒', sentence: 'I am sick.' },
+  { id: 263, cat: 'adjectives', en: 'tired',    zh: '累',     emoji: '😴', sentence: 'I am tired.' },
+  { id: 264, cat: 'adjectives', en: 'hot',      zh: '熱',     emoji: '🥵', sentence: 'The tea is hot.' },
+  { id: 265, cat: 'adjectives', en: 'cold',     zh: '冷',     emoji: '🥶', sentence: 'The milk is cold.' },
+  { id: 266, cat: 'adjectives', en: 'rainy',    zh: '下雨的', emoji: '🌧️', sentence: 'It is rainy today.' },
+  { id: 267, cat: 'adjectives', en: 'snowy',    zh: '下雪的', emoji: '🌨️', sentence: 'It is snowy today.' },
+  { id: 268, cat: 'adjectives', en: 'sunny',    zh: '晴朗的', emoji: '☀️', sentence: 'It is sunny today.' },
+  { id: 269, cat: 'adjectives', en: 'cloudy',   zh: '多雲的', emoji: '☁️', sentence: 'It is cloudy today.' },
+  { id: 270, cat: 'adjectives', en: 'windy',    zh: '有風的', emoji: '🌬️', sentence: 'It is windy today.' },
+  { id: 271, cat: 'adjectives', en: 'black',    zh: '黑色',   emoji: '⬛', sentence: 'My cat is black.' },
+  { id: 272, cat: 'adjectives', en: 'white',    zh: '白色',   emoji: '⬜', sentence: 'The snow is white.' },
+  { id: 273, cat: 'adjectives', en: 'gray',     zh: '灰色',   emoji: '🌫️', sentence: 'The elephant is gray.' },
+  { id: 274, cat: 'adjectives', en: 'brown',    zh: '棕色',   emoji: '🟫', sentence: 'The bear is brown.' },
+  { id: 275, cat: 'adjectives', en: 'red',      zh: '紅色',   emoji: '🟥', sentence: 'The apple is red.' },
+  { id: 276, cat: 'adjectives', en: 'orange',   zh: '橙色',   emoji: '🟧', sentence: 'My hat is orange.' },
+  { id: 277, cat: 'adjectives', en: 'yellow',   zh: '黃色',   emoji: '🟨', sentence: 'The banana is yellow.' },
+  { id: 278, cat: 'adjectives', en: 'green',    zh: '綠色',   emoji: '🟩', sentence: 'The frog is green.' },
+  { id: 279, cat: 'adjectives', en: 'blue',     zh: '藍色',   emoji: '🟦', sentence: 'My shirt is blue.' },
+  { id: 280, cat: 'adjectives', en: 'purple',   zh: '紫色',   emoji: '🟪', sentence: 'The grape is purple.' },
+  { id: 281, cat: 'adjectives', en: 'pink',     zh: '粉紅色', emoji: '🩷', sentence: 'The pig is pink.' },
+
+  // ---------- Prepositions 介系詞 (282-290) ----------
+  { id: 282, cat: 'prepositions', en: 'at',          zh: '在',       emoji: '📍', sentence: 'I am at home.' },
+  { id: 283, cat: 'prepositions', en: 'in',          zh: '在...裡',  emoji: '📥', sentence: 'The cat is in the box.' },
+  { id: 284, cat: 'prepositions', en: 'on',          zh: '在...上',  emoji: '🔝', sentence: 'The book is on the desk.' },
+  { id: 285, cat: 'prepositions', en: 'under',       zh: '在...下',  emoji: '🔽', sentence: 'The dog is under the table.' },
+  { id: 286, cat: 'prepositions', en: 'by',          zh: '在...旁',  emoji: '↔️', sentence: 'I sit by the window.' },
+  { id: 287, cat: 'prepositions', en: 'next to',     zh: '在...旁邊', emoji: '↔️', sentence: 'The chair is next to the bed.' },
+  { id: 288, cat: 'prepositions', en: 'beside',      zh: '在...旁邊', emoji: '↔️', sentence: 'The cat is beside the dog.' },
+  { id: 289, cat: 'prepositions', en: 'in front of', zh: '在...前面', emoji: '⏩', sentence: 'The car is in front of the house.' },
+  { id: 290, cat: 'prepositions', en: 'behind',      zh: '在...後面', emoji: '⏪', sentence: 'The cat is behind the door.' },
+
+  // ---------- Question Words 疑問詞 (291-300) ----------
+  { id: 291, cat: 'questions', en: 'who',       zh: '誰',     emoji: '❓', sentence: 'Who is she?' },
+  { id: 292, cat: 'questions', en: 'what',      zh: '什麼',   emoji: '❓', sentence: 'What is this?' },
+  { id: 293, cat: 'questions', en: 'when',      zh: '何時',   emoji: '❓', sentence: 'When do you eat?' },
+  { id: 294, cat: 'questions', en: 'where',     zh: '哪裡',   emoji: '❓', sentence: 'Where is my bag?' },
+  { id: 295, cat: 'questions', en: 'which',     zh: '哪一個', emoji: '❓', sentence: 'Which one do you like?' },
+  { id: 296, cat: 'questions', en: 'why',       zh: '為什麼', emoji: '❓', sentence: 'Why are you sad?' },
+  { id: 297, cat: 'questions', en: 'what time', zh: '幾點',   emoji: '🕐', sentence: 'What time is it?' },
+  { id: 298, cat: 'questions', en: 'how',       zh: '如何',   emoji: '❓', sentence: 'How are you?' },
+  { id: 299, cat: 'questions', en: 'how much',  zh: '多少錢', emoji: '💰', sentence: 'How much is it?' },
+  { id: 300, cat: 'questions', en: 'how many',  zh: '多少個', emoji: '🔢', sentence: 'How many dogs?' },
+];
+
+/* 建立查詢用的對照表：把英文 (小寫) → 單字物件，
+   同時支援多字詞 (hot dog / ice cream / in front of ...) 供例句點擊查詢使用。 */
+const WORD_LOOKUP = (() => {
+  const map = {};
+  for (const w of WORDS) {
+    map[w.en.toLowerCase()] = w;
+  }
+  return map;
+})();
+
+// 特殊分類代碼：混合挑戰 = 全部單字
+const ALL_CAT = '__all__';
+const ALL_CATEGORY = { id: ALL_CAT, name: 'All Words', zh: '全部單字', emoji: '🌈', color: '#5B7CFA' };
+
+// 依分類取得單字 (ALL_CAT 回傳全部)
+function wordsByCategory(catId) {
+  if (catId === ALL_CAT) return WORDS;
+  return WORDS.filter(w => w.cat === catId);
+}
+
+// 取得分類物件 (含「全部」)
+function getCategory(catId) {
+  if (catId === ALL_CAT) return ALL_CATEGORY;
+  return CATEGORIES.find(c => c.id === catId);
+}
+
+// 洗牌 (Fisher–Yates)，用於遊戲出題
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}

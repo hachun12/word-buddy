@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#5B7CFA" />
+  <title>Word Buddy 單字小夥伴</title>
+  <meta name="description" content="國小必學 300 單字互動學習：看圖、發音、例句、遊戲。" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 頂部列 -->
+  <header id="topbar">
+    <button id="homeBtn" class="icon-btn" aria-label="回首頁">🏠</button>
+    <div id="title">Word Buddy <span class="title-zh">單字小夥伴</span></div>
+    <div id="starCount" class="star-count" aria-label="星星數">⭐ <span id="starNum">0</span></div>
+  </header>
+
+  <!-- 主要內容區，由 JavaScript 動態渲染 -->
+  <main id="app"></main>
+
+  <!-- 單字彈出小視窗 (點擊例句中的單字時顯示) -->
+  <div id="wordPopup" class="word-popup hidden" role="dialog" aria-modal="true"></div>
+
+  <!-- 載入順序：資料 → 工具 → 各模式 → 主控 -->
+  <script src="js/data.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/mode-flashcards.js"></script>
+  <script src="js/mode-listen.js"></script>
+  <script src="js/mode-quiz.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- 註冊 Service Worker (離線可用)。以 file:// 開啟時會自動略過 -->
+  <script>
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
