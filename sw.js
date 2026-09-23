@@ -1,6 +1,8 @@
 /* Service Worker — 讓 App 可離線使用、載入更快
-   採 cache-first；改版時把 CACHE 版本號 +1 即可更新。 */
-const CACHE = 'wordbuddy-v2';
+   策略：連線優先 (network-first)。
+   有網路時一律取最新版並更新快取；沒網路時才用快取，
+   這樣改版後線上使用者會立即看到新版，不會卡在舊快取。 */
+const CACHE = 'wordbuddy-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -33,10 +35,14 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+    fetch(e.request).then(res => {
+      // 取到最新版就順手更新快取
       const copy = res.clone();
       caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
       return res;
-    }).catch(() => caches.match('./index.html')))
+    }).catch(() =>
+      // 沒網路時退回快取；找不到就回首頁
+      caches.match(e.request).then(hit => hit || caches.match('./index.html'))
+    )
   );
 });

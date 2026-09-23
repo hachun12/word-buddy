@@ -246,6 +246,7 @@ body {
   justify-content: center;
   padding: 20px;
   border-top: 10px solid var(--cat-color, var(--brand));
+  overflow-y: auto;          /* 內容較多時可捲動，朗讀鈕不會被切掉 */
 }
 .flash-front .fc-emoji { font-size: 6.5rem; line-height: 1; }
 .flash-front .fc-emoji.is-number {
