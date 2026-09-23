@@ -41,6 +41,7 @@ const Flashcards = (() => {
               <div class="fc-zh">${UI.escapeHtml(w.zh)}</div>
               <div class="sentence-label">📖 例句 (點單字可查詢)</div>
               <div class="fc-sentence">${UI.renderSentence(w.sentence)}</div>
+              <button class="sentence-speak" id="sentenceSpeak">🔊 朗讀例句</button>
             </div>
           </div>
         </div>
@@ -57,11 +58,19 @@ const Flashcards = (() => {
     root.querySelector('#backToCat').onclick = () => App.openCategory(cat.id);
 
     const card = root.querySelector('#card');
-    // 點卡片翻面，但點到例句中的單字時不要翻
+    // 點卡片翻面，但點到例句單字或朗讀鈕時不要翻
     card.onclick = (e) => {
-      if (e.target.closest('.clickable-word')) return;
+      if (e.target.closest('.clickable-word') || e.target.closest('#sentenceSpeak')) return;
       flipped = !flipped;
       card.classList.toggle('flipped', flipped);
+    };
+
+    // 朗讀整句例句
+    const sentenceSpeak = root.querySelector('#sentenceSpeak');
+    sentenceSpeak.onclick = (e) => {
+      e.stopPropagation();
+      sentenceSpeak.classList.add('speaking');
+      Speech.speak(w.sentence, { rate: 0.8, onend: () => sentenceSpeak.classList.remove('speaking') });
     };
 
     const speakBtn = root.querySelector('#speakBtn');
