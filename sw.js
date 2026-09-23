@@ -1,6 +1,6 @@
 /* Service Worker — 讓 App 可離線使用、載入更快
    採 cache-first；改版時把 CACHE 版本號 +1 即可更新。 */
-const CACHE = 'wordbuddy-v1';
+const CACHE = 'wordbuddy-v2';
 const ASSETS = [
   './',
   './index.html',

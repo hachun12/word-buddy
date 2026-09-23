@@ -6,6 +6,7 @@
 const ListenGame = (() => {
   const QN = 10;                 // 一輪題數
   let cat = null, questions = [], qi = 0, score = 0;
+  let mode = 'word';             // 'word' 唸單字 | 'sentence' 唸例句
 
   function pickDistractors(correct, pool, n) {
     let others = shuffle(pool.filter(w => w.id !== correct.id));
@@ -50,6 +51,11 @@ const ListenGame = (() => {
       <div class="game-progressbar"><i style="width:${pct}%"></i></div>
       <div class="view-sub">第 ${qi + 1} / ${questions.length} 題　聽聽看是哪一個？</div>
 
+      <div class="mode-toggle" role="group" aria-label="播放模式">
+        <button class="mode-btn ${mode === 'word' ? 'active' : ''}" data-mode="word">🔤 唸單字</button>
+        <button class="mode-btn ${mode === 'sentence' ? 'active' : ''}" data-mode="sentence">📖 唸例句</button>
+      </div>
+
       <div class="game-prompt">
         <button class="big-speak" id="playBtn"><span class="big">🔊</span> 播放</button>
       </div>
@@ -59,8 +65,21 @@ const ListenGame = (() => {
     const root = App.mount(html);
     root.querySelector('#quit').onclick = () => App.openCategory(cat.id);
 
-    const play = () => Speech.speak(q.correct.en);
+    const play = () => Speech.speak(
+      mode === 'sentence' ? q.correct.sentence : q.correct.en,
+      { rate: mode === 'sentence' ? 0.8 : 0.85 }
+    );
     root.querySelector('#playBtn').onclick = play;
+
+    // 切換「唸單字 / 唸例句」，切換後立即重播
+    root.querySelectorAll('.mode-btn').forEach(b => {
+      b.onclick = () => {
+        mode = b.dataset.mode;
+        root.querySelectorAll('.mode-btn').forEach(x => x.classList.toggle('active', x === b));
+        play();
+      };
+    });
+
     play(); // 進題自動播放
 
     root.querySelectorAll('.option-btn').forEach(btn => {

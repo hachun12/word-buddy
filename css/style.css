@@ -349,6 +349,34 @@ body {
   transition: width .3s;
 }
 
+/* 遊戲：唸單字 / 唸例句 切換 */
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 auto 18px;
+  background: #E7ECFB;
+  border-radius: 999px;
+  padding: 5px;
+  width: fit-content;
+}
+.mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.mode-btn.active {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
 .game-prompt {
   text-align: center;
   margin-bottom: 22px;
