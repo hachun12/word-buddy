@@ -9,10 +9,12 @@ const ListenGame = (() => {
   let mode = 'word';             // 'word' 唸單字 | 'sentence' 唸例句
 
   function pickDistractors(correct, pool, n) {
-    let others = shuffle(pool.filter(w => w.id !== correct.id));
-    if (others.length < n) {     // 池子太小則從全部單字補
-      others = others.concat(shuffle(WORDS.filter(
-        w => w.id !== correct.id && !pool.some(p => p.id === w.id))));
+    // 排除同拼字的字 (如 may / May)，避免出現兩個一樣的選項
+    const ok = w => w.en.toLowerCase() !== correct.en.toLowerCase();
+    let others = shuffle(pool.filter(ok));
+    if (others.length < n) {     // 池子太小則從同等級全部單字補
+      others = others.concat(shuffle(wordsByCategory(allCatId(correct.level)).filter(
+        w => ok(w) && !pool.some(p => p.id === w.id))));
     }
     return others.slice(0, n);
   }

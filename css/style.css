@@ -377,6 +377,17 @@ body {
   color: #fff;
   box-shadow: var(--shadow);
 }
+/* 首頁的「國小 / 國中」等級切換 */
+.level-toggle .mode-btn { font-size: 1.1rem; padding: 10px 26px; }
+
+/* 單字卡背面的詞性標籤 (國中字庫) */
+.fc-pos {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: 8px;
+  vertical-align: middle;
+}
 
 .game-prompt {
   text-align: center;

@@ -18,18 +18,28 @@ const UI = (() => {
     return w.replace(/^[^A-Za-z0-9']+|[^A-Za-z0-9']+$/g, '');
   }
 
-  // 嘗試把一個 (可能含複數) 詞對到單字資料
-  function matchWord(phrase) {
+  // 嘗試把一個 (可能含複數、動詞變化) 詞對到單字資料
+  function matchWord(phrase, level) {
     const p = phrase.toLowerCase();
-    if (WORD_LOOKUP[p]) return WORD_LOOKUP[p];
-    if (p.endsWith('es') && WORD_LOOKUP[p.slice(0, -2)]) return WORD_LOOKUP[p.slice(0, -2)];
-    if (p.endsWith('s') && WORD_LOOKUP[p.slice(0, -1)]) return WORD_LOOKUP[p.slice(0, -1)];
+    const candidates = [p];
+    if (p.endsWith('ies')) candidates.push(p.slice(0, -3) + 'y');
+    if (p.endsWith('s')) candidates.push(p.slice(0, -1));
+    if (p.endsWith('es')) candidates.push(p.slice(0, -2));
+    if (p.endsWith('ied')) candidates.push(p.slice(0, -3) + 'y');
+    if (p.endsWith('ed')) candidates.push(p.slice(0, -1), p.slice(0, -2), p.slice(0, -3));   // liked / played / stopped
+    if (p.endsWith('ing')) candidates.push(p.slice(0, -3), p.slice(0, -3) + 'e', p.slice(0, -4)); // reading / making / running
+    for (const c of candidates) {
+      if (c.length < 2 && c !== p) continue;
+      const w = lookupWord(c, level);
+      if (w) return w;
+    }
     return null;
   }
 
-  /* 把例句轉成 HTML，句中屬於 300 單字的詞會變成可點擊 span。
-     支援多字片語 (hot dog / ice cream / in front of ...)。 */
-  function renderSentence(sentence) {
+  /* 把例句轉成 HTML，句中屬於字庫的詞會變成可點擊 span。
+     支援多字片語 (hot dog / ice cream / in front of ...)。
+     level：優先查詢的等級 (國小卡片優先對到國小單字) */
+  function renderSentence(sentence, level) {
     const tokens = sentence.split(/\s+/);
     let html = '';
     let i = 0;
@@ -38,13 +48,13 @@ const UI = (() => {
       for (let len = 3; len >= 1; len--) {           // 先試最長片語
         if (i + len <= tokens.length) {
           const phrase = tokens.slice(i, i + len).map(cleanWord).join(' ');
-          const w = matchWord(phrase);
+          const w = matchWord(phrase, level);
           if (w) { hit = { len, word: w }; break; }
         }
       }
       if (hit) {
         const display = tokens.slice(i, i + hit.len).join(' ');
-        html += `<span class="clickable-word" data-en="${escapeHtml(hit.word.en)}">${escapeHtml(display)}</span> `;
+        html += `<span class="clickable-word" data-id="${hit.word.id}">${escapeHtml(display)}</span> `;
         i += hit.len;
       } else {
         html += escapeHtml(tokens[i]) + ' ';
@@ -54,8 +64,8 @@ const UI = (() => {
     return html.trim();
   }
 
-  // 數字類的 emoji 其實是數字字串，需要特別放大顯示
-  function isNumberGlyph(word) { return word.cat === 'numbers'; }
+  // 數字類的 emoji 其實是數字字串 (如 "12"、"1st")，需要特別放大顯示
+  function isNumberGlyph(word) { return /^[0-9½¼]/.test(word.emoji); }
 
   /* ---------- 單字彈出視窗 ---------- */
   const popup = () => document.getElementById('wordPopup');
@@ -95,7 +105,8 @@ const UI = (() => {
   document.addEventListener('click', (e) => {
     const span = e.target.closest('.clickable-word');
     if (span) {
-      const w = WORD_LOOKUP[span.dataset.en.toLowerCase()];
+      const id = Number(span.dataset.id);
+      const w = WORDS.find(x => x.id === id);
       if (w) showWordPopup(w);
     }
   });

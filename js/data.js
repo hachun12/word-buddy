@@ -1,13 +1,23 @@
 /* =========================================================
    Word Buddy 單字小夥伴 — 單字資料庫
-   300 個必學單字，每筆包含：
-     id       流水號 (對照 PDF)
+   分兩個等級：
+     elem    國小必學 300 單字 (本檔，對照 docs/301voc.pdf)
+     junior  國中基本 2000 單字 (js/data-junior.js，對照 docs/junior high school 2000字.pdf)
+   每筆包含：
+     id       流水號 (國小 1-300；國中 1001 起)
      cat      分類代碼
      en       英文
      zh       中文
      emoji    圖示
-     sentence 例句 (盡量使用 300 單字內的詞，可點擊查詢)
+     sentence 例句 (可點擊查詢)
+     pos      詞性 (國中字庫才有)
+     level    等級 (由下方合併時自動加上)
    ========================================================= */
+
+const LEVELS = [
+  { id: 'elem',   name: '國小', title: '國小必學 300 單字',  emoji: '🎒' },
+  { id: 'junior', name: '國中', title: '國中基本 2000 單字', emoji: '🎓' },
+];
 
 const CATEGORIES = [
   { id: 'numbers',      name: 'Numbers',       zh: '數字',   emoji: '🔢', color: '#FF6B6B' },
@@ -353,29 +363,63 @@ const WORDS = [
   { id: 300, cat: 'questions', en: 'how many',  zh: '多少個', emoji: '🔢', sentence: 'How many dogs?' },
 ];
 
-/* 建立查詢用的對照表：把英文 (小寫) → 單字物件，
+/* 合併國中字庫 (js/data-junior.js 需在本檔之前載入；缺檔時只有國小字庫) */
+CATEGORIES.forEach(c => { c.level = 'elem'; });
+WORDS.forEach(w => { w.level = 'elem'; });
+if (typeof JUNIOR_CATEGORIES !== 'undefined') {
+  JUNIOR_CATEGORIES.forEach(c => CATEGORIES.push({ ...c, level: 'junior' }));
+  JUNIOR_WORDS.forEach(w => WORDS.push({ ...w, level: 'junior' }));
+}
+
+/* 建立查詢用的對照表：等級 → (英文小寫 → 單字物件)，
    同時支援多字詞 (hot dog / ice cream / in front of ...) 供例句點擊查詢使用。 */
 const WORD_LOOKUP = (() => {
   const map = {};
+  for (const lv of LEVELS) map[lv.id] = {};
   for (const w of WORDS) {
-    map[w.en.toLowerCase()] = w;
+    const key = w.en.toLowerCase();
+    if (!map[w.level][key]) map[w.level][key] = w;
   }
   return map;
 })();
 
-// 特殊分類代碼：混合挑戰 = 全部單字
-const ALL_CAT = '__all__';
-const ALL_CATEGORY = { id: ALL_CAT, name: 'All Words', zh: '全部單字', emoji: '🌈', color: '#5B7CFA' };
+// 查單字：先找指定等級，找不到再找其他等級
+function lookupWord(en, level) {
+  const key = en.toLowerCase();
+  const order = [level, ...LEVELS.map(l => l.id).filter(id => id !== level)];
+  for (const lv of order) {
+    if (WORD_LOOKUP[lv] && WORD_LOOKUP[lv][key]) return WORD_LOOKUP[lv][key];
+  }
+  return null;
+}
 
-// 依分類取得單字 (ALL_CAT 回傳全部)
+// 特殊分類代碼：混合挑戰 = 該等級全部單字，例如 '__all__:junior'
+const ALL_PREFIX = '__all__:';
+const allCatId = (level) => ALL_PREFIX + level;
+const isAllCat = (catId) => typeof catId === 'string' && catId.startsWith(ALL_PREFIX);
+
+const getLevel = (levelId) => LEVELS.find(l => l.id === levelId) || LEVELS[0];
+
+// 依分類取得單字 (混合挑戰回傳該等級全部)
 function wordsByCategory(catId) {
-  if (catId === ALL_CAT) return WORDS;
+  if (isAllCat(catId)) {
+    const level = catId.slice(ALL_PREFIX.length);
+    return WORDS.filter(w => w.level === level);
+  }
   return WORDS.filter(w => w.cat === catId);
+}
+
+// 某等級的分類
+function categoriesByLevel(level) {
+  return CATEGORIES.filter(c => c.level === level);
 }
 
 // 取得分類物件 (含「全部」)
 function getCategory(catId) {
-  if (catId === ALL_CAT) return ALL_CATEGORY;
+  if (isAllCat(catId)) {
+    const lv = getLevel(catId.slice(ALL_PREFIX.length));
+    return { id: catId, level: lv.id, name: 'All Words', zh: `${lv.name}全部單字`, emoji: '🌈', color: '#5B7CFA' };
+  }
   return CATEGORIES.find(c => c.id === catId);
 }
 

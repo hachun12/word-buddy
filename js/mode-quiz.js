@@ -8,10 +8,12 @@ const QuizGame = (() => {
   let cat = null, questions = [], qi = 0, score = 0;
 
   function pickDistractors(correct, pool, n) {
-    let others = shuffle(pool.filter(w => w.id !== correct.id));
+    // 排除同拼字的字 (如 may / May)，避免出現兩個一樣的選項
+    const ok = w => w.en.toLowerCase() !== correct.en.toLowerCase();
+    let others = shuffle(pool.filter(ok));
     if (others.length < n) {
-      others = others.concat(shuffle(WORDS.filter(
-        w => w.id !== correct.id && !pool.some(p => p.id === w.id))));
+      others = others.concat(shuffle(wordsByCategory(allCatId(correct.level)).filter(
+        w => ok(w) && !pool.some(p => p.id === w.id))));
     }
     return others.slice(0, n);
   }

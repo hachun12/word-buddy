@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#5B7CFA" />
   <title>Word Buddy 單字小夥伴</title>
-  <meta name="description" content="國小必學 300 單字互動學習：看圖、發音、例句、遊戲。" />
+  <meta name="description" content="國小必學 300 單字＋國中基本 2000 單字互動學習：看圖、發音、例句、遊戲。" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="css/style.css" />
@@ -24,7 +24,8 @@
   <!-- 單字彈出小視窗 (點擊例句中的單字時顯示) -->
   <div id="wordPopup" class="word-popup hidden" role="dialog" aria-modal="true"></div>
 
-  <!-- 載入順序：資料 → 工具 → 各模式 → 主控 -->
+  <!-- 載入順序：資料 (國中字庫須在 data.js 之前) → 工具 → 各模式 → 主控 -->
+  <script src="js/data-junior.js"></script>
   <script src="js/data.js"></script>
   <script src="js/speech.js"></script>
   <script src="js/progress.js"></script>

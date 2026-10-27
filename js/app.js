@@ -14,17 +14,37 @@ const App = (() => {
     return el;
   }
 
+  // 目前選擇的等級 (國小 / 國中)，記在瀏覽器
+  const LEVEL_KEY = 'wordbuddy_level';
+  let level = (() => {
+    try {
+      const saved = localStorage.getItem(LEVEL_KEY);
+      if (LEVELS.some(l => l.id === saved)) return saved;
+    } catch (e) { /* localStorage 可能被停用 */ }
+    return LEVELS[0].id;
+  })();
+
+  function setLevel(id) {
+    level = id;
+    try { localStorage.setItem(LEVEL_KEY, id); } catch (e) { /* 忽略 */ }
+  }
+
   function refreshStars() {
     document.getElementById('starNum').textContent = Progress.getStars();
   }
 
   /* ---------- 首頁 ---------- */
   function goHome() {
-    const total = WORDS.length;
-    const learned = Progress.learnedCount();
-    const pct = Math.round((learned / total) * 100);
+    const lv = getLevel(level);
+    const total = wordsByCategory(allCatId(lv.id)).length;
+    const learned = Progress.learnedInCategory(allCatId(lv.id));
+    const pct = total ? Math.round((learned / total) * 100) : 0;
 
-    const cards = CATEGORIES.map(c => {
+    const tabs = LEVELS.map(l => `
+      <button class="mode-btn ${l.id === lv.id ? 'active' : ''}" data-level="${l.id}">${l.emoji} ${l.name}</button>`
+    ).join('');
+
+    const cards = categoriesByLevel(lv.id).map(c => {
       const all = wordsByCategory(c.id).length;
       const done = Progress.learnedInCategory(c.id);
       const p = all ? Math.round((done / all) * 100) : 0;
@@ -39,9 +59,11 @@ const App = (() => {
     }).join('');
 
     const html = `
+      <div class="mode-toggle level-toggle" role="group" aria-label="選擇等級">${tabs}</div>
+
       <div class="hero">
         <h1>👋 嗨！一起學單字吧</h1>
-        <p>國小必學 300 單字 · 看圖 · 發音 · 例句 · 玩遊戲</p>
+        <p>${lv.title} · 看圖 · 發音 · 例句 · 玩遊戲</p>
         <div class="hero-stats">
           <div class="stat-pill">已學會單字 <b>${learned} / ${total}</b></div>
           <div class="stat-pill">收集星星 <b>⭐ ${Progress.getStars()}</b></div>
@@ -67,12 +89,15 @@ const App = (() => {
       </div>`;
 
     const root = mount(html);
+    root.querySelectorAll('.level-toggle .mode-btn').forEach(btn => {
+      btn.onclick = () => { setLevel(btn.dataset.level); goHome(); };
+    });
     root.querySelectorAll('.cat-card').forEach(btn => {
       btn.onclick = () => openCategory(btn.dataset.cat);
     });
-    // 混合挑戰：使用全部單字當作題庫
-    root.querySelector('#mixListen').onclick = () => ListenGame.start(ALL_CAT);
-    root.querySelector('#mixQuiz').onclick = () => QuizGame.start(ALL_CAT);
+    // 混合挑戰：使用目前等級的全部單字當作題庫
+    root.querySelector('#mixListen').onclick = () => ListenGame.start(allCatId(lv.id));
+    root.querySelector('#mixQuiz').onclick = () => QuizGame.start(allCatId(lv.id));
     root.querySelector('#resetBtn').onclick = () => {
       if (confirm('確定要清除所有學習進度和星星嗎？')) {
         Progress.reset();
@@ -84,15 +109,16 @@ const App = (() => {
 
   /* ---------- 分類選單 (三種活動) ---------- */
   function openCategory(catId) {
-    if (catId === ALL_CAT) return goHome();
-    const c = CATEGORIES.find(x => x.id === catId);
+    if (isAllCat(catId)) return goHome();
+    const c = getCategory(catId);
+    setLevel(c.level);
     const all = wordsByCategory(catId).length;
     const done = Progress.learnedInCategory(catId);
 
     const html = `
       <button class="ghost-btn primary-btn" id="home2">‹ 回首頁</button>
       <div class="view-title" style="color:${c.color}">${c.emoji} ${c.name}</div>
-      <p class="view-sub">${c.zh} · 共 ${all} 個單字 · 已學 ${done} 個</p>
+      <p class="view-sub">${getLevel(c.level).name} · ${c.zh} · 共 ${all} 個單字 · 已學 ${done} 個</p>
 
       <div class="activity-list" style="--cat-color:${c.color}">
         <button class="activity-btn" id="actFlash">
@@ -142,15 +168,13 @@ const App = (() => {
     root.querySelector('#toHome').onclick = goHome;
   }
 
-  // ALL_CAT 於 data.js 定義 (混合挑戰 = 全部單字)
-
   function init() {
     refreshStars();
     goHome();
     document.getElementById('homeBtn').onclick = goHome;
   }
 
-  return { mount, refreshStars, goHome, openCategory, renderGameResult, ALL_CAT, init };
+  return { mount, refreshStars, goHome, openCategory, renderGameResult, init };
 })();
 
 window.addEventListener('DOMContentLoaded', App.init);

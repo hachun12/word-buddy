@@ -2,11 +2,12 @@
    策略：連線優先 (network-first)。
    有網路時一律取最新版並更新快取；沒網路時才用快取，
    這樣改版後線上使用者會立即看到新版，不會卡在舊快取。 */
-const CACHE = 'wordbuddy-v3';
+const CACHE = 'wordbuddy-v4';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
+  './js/data-junior.js',
   './js/data.js',
   './js/speech.js',
   './js/progress.js',

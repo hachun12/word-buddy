@@ -1,7 +1,7 @@
 {
   "name": "Word Buddy 單字小夥伴",
   "short_name": "單字小夥伴",
-  "description": "國小必學 300 單字互動學習：看圖、發音、例句、遊戲。",
+  "description": "國小必學 300 單字＋國中基本 2000 單字互動學習：看圖、發音、例句、遊戲。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

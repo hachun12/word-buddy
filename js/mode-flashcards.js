@@ -10,7 +10,7 @@ const Flashcards = (() => {
   let cat = null;
 
   function start(catId) {
-    cat = CATEGORIES.find(c => c.id === catId);
+    cat = getCategory(catId);
     words = wordsByCategory(catId);
     idx = 0;
     flipped = false;
@@ -38,9 +38,9 @@ const Flashcards = (() => {
             <div class="flash-face flash-back">
               <div class="fc-emoji-sm ${numClass}">${w.emoji}</div>
               <div class="fc-en2">${UI.escapeHtml(w.en)}</div>
-              <div class="fc-zh">${UI.escapeHtml(w.zh)}</div>
+              <div class="fc-zh">${w.pos ? `<span class="fc-pos">${w.pos}.</span>` : ''}${UI.escapeHtml(w.zh)}</div>
               <div class="sentence-label">📖 例句 (點單字可查詢)</div>
-              <div class="fc-sentence">${UI.renderSentence(w.sentence)}</div>
+              <div class="fc-sentence">${UI.renderSentence(w.sentence, w.level)}</div>
               <button class="sentence-speak" id="sentenceSpeak">🔊 朗讀例句</button>
             </div>
           </div>
